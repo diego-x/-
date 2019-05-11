@@ -1,0 +1,140 @@
+---
+layout: "post"
+title: "1"
+date: "2019-03-19 16:37"
+---
+
+做出来的题目就不详细的说了，主要写一下之前没做出来现在做出来的题目。
+他们真的好强，自己很菜很菜。差距好大，题目的很多东西都没涉及到，见得太少。
+
+## web爆破
+
+提示是正则表达式意思就是skcrf加上五位数字，爆破即可
+
+## parse
+
+parse_str（）函数把查询字符串解析到变量中
+即flag传值为boom=givemeflag
+
+## 紧急报文
+
+ADFGX密码解密
+
+## Crypto
+16进制解密
+
+## excel
+
+记事本查看
+
+## morse
+
+使用Audacity打开，然后用摩斯电码解密
+
+
+## 报菜名
+
+这个题目有点遗憾，因为搞错了一个地方，导致我的脚本提交上去的结果出现了问题
+一开始做这个题目，写的脚本只提交了answer，发现运行脚本后，页面没有反应，然后查看了源码发现还有一个隐藏的sum值，把这个直接复制过来提交上去，发现有了反应但是结果错误。
+我一直以为是我脚本在计算和的时候出现了问题，就一直修改，修改无果。然后发现
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190319164617.png)
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190319164637.png)
+每次刷新都是不一样的，按正常来说只要把它用re匹配下来提交上去就可以，但是当时犯傻，把它base64解码后在进行提交的，搞了一通最后也没搞出来。
+
+回来以后把匹配下来的sum值和计算的合提交就出来了。（遗憾....）
+脚本如下（写的比较麻烦）
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190319165144.png)
+
+
+## web_1
+
+虽然寒假做了不少类似的web题目，但是拿到这道题目时仍然是束手无策，不明白这题目考察的是什么知识点，在没给提示前尝试过数组绕过、科学计数法绕过等（胡乱试的）。给了提示之后（四舍五入），也没能做出来，给出了答案也没能理解，说到底就是知识面还不够。后来查询相关资料时发现0.9999999999999999=1
+原来是php浮点数在计算机储存方式与整形完全不同导致的。
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190319170841.png)
+如果浮点型的数值小数点位数过多会导致精度缺失，在深入就是具体的存储形式了（二进制）。
+此题目我就得就是利用了浮点型的精度缺失。
+
+
+## login
+
+抓包得到提示
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190319202649.png)
+解码得
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190319202804.png)
+
+得到提示意思是，对输入的内容没有任何过滤，且存在逻辑漏洞。
+猜测row就是从数据库返回的查询结果，row['password'] 就是从数据库中返回的经md5加密后的密码。
+
+由于对用户的输入没有进行过滤，所以存在注入漏洞，根据此题的逻辑，当我们输入一个不存在的用户名返回结果为空，但当我们进行union查询时则将查询结果返回给row（我们自己输入的内容）。也就是说我们通过注入给row赋值，然后再利用查询的判断语句 $row[password]===md5($password)
+既然row是我们注入赋的值，且\$password的值也是我们输入的，所以我们将row的值赋值成\$password的md5值即可。
+
+当时考试的时候就利用这些去做，但是却忽略了返回的行数，导致登入失败，还有就是没有好好利用数据库返回的语句。
+
+这次重新再做，就充分利用了返回的sql语句。
+
+先尝试返回结果为一行
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190319204141.png)
+结果
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190319204256.png)
+结果为空，由于不存在过滤，所以推断返回结果不止一行。
+
+再次尝试（两行）
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190319204439.png)
+
+结果不为空（但是登入失败）
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190319204514.png)
+
+于是确定返回结果为两行，（这就是之前失败的原因）
+
+为了方便起见构造1的md5值赋值给row
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190319204806.png)
+结果还是失败
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190319204841.png)
+
+于是尝试
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190319204923.png)
+
+测试结果登入成功
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190319204959.png)
+
+
+测试结果证明，第一个的值应该是username，第二个值才是password，所以顺序还是很重要的。
+然后进入login.php之后就可以看到flag。
+
+总的来说知识还是掌握的不扎实，导致题目没做出来。
+
+## bwn
+
+盲水印，第一次见这种加密方式，也是长见识了
+利用工具blindwatermark进行提取即可。
+最麻烦的是我的python的pip不能用，升级也升不动，捣鼓了好久才把pip弄好了，pip弄好，之后又安装cv2。
+之后就提取即可（需要原图）
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190320221222.png)
+
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190320221302.png)
+
+## rsa
+
+简单原理：
+
+选择两个大素数p和q，计算出模数N = p * q
+
+计算φ = (p−1) * (q−1) 即N的欧拉函数，然后选择一个e (1< e<φ)，且e和φ互质
+
+取e的模反数为d，计算方法: e * d ≡ 1 (mod φ)
+
+对明文m进行加密：c = pow(m, e, N)，得到的c即为密文
+对密文c进行解密，m = pow(c, d, N)，得到的m即为明文
+
+
+当时这个题目对原理有了点单的理解，但是没有找到合适的工具曲解这个题目
+通过http://factordb.com/把n分解成p和q
+
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190321221813.png)
+
+之后通过一些rsa解密网站，进行解密（未果）
+后来也是根据表哥的解析
+安装了gmpy2模块，然后编写的py脚本解出答案。
+
+在网上发现一个RSA-TOOL 可以自动获取公匙和私匙 并进行解密，
+但是还是缺着东西，导致无法运行。

